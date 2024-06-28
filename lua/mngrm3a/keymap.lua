@@ -23,137 +23,69 @@ function M.mk_cmp_keymap(cmp, cmp_select)
     }
 end
 
-function M.setup_leaders(map_leader, local_map_leader)
+local function m(mode, lhs, rhs, opts)
+    vim.keymap.set(mode, lhs, rhs, type(opts) == "string" and { desc = opts } or opts)
+end
+
+local function ms(mo, l, r, d)
+    m(mo, l, r, { desc = d, silent = true })
+end
+
+local function setup_lsp_keymap()
+    m("n", "K", vim.lsp.buf.hover, "Hover knowledge")
+    m("n", "<leader>jd", vim.lsp.buf.definition, "Jump to definition")
+    m("n", "<leader>jt", vim.lsp.buf.type_definition, "Jump to type definition")
+    m("n", "<leader>ji", vim.lsp.buf.implementation, "Jump to implementation")
+    m("n", "<leader>ar", vim.lsp.buf.rename, "Rename identifier")
+    m("n", "<leader>af", vim.lsp.buf.format, "Format document")
+    m("n", "<leader>dj", vim.diagnostic.goto_next, "Go to next diagnostic")
+    m("n", "<leader>dk", vim.diagnostic.goto_prev, "Go to previous diagnostic")
+end
+
+local function setup_telescope_keymap()
+    local builtin = require("telescope.builtin")
+    m("n", "<leader>?", builtin.oldfiles, "Find recently opened files")
+    m("n", "<leader>sb", builtin.buffers, "Find existing buffers")
+    m("n", "<leader>/", builtin.current_buffer_fuzzy_find, "Fuzzily search in current buffer")
+    m("n", "<leader>sf", builtin.find_files, "Search files")
+    m("n", "<leader>sh", builtin.help_tags, "Search help")
+    m("n", "<leader>sw", builtin.grep_string, "Search current word")
+    m("n", "<leader>sg", builtin.live_grep, "Search with grep")
+    m("n", "<leader>sd", builtin.diagnostics, "Search diagnotics")
+    m("n", "<leader>sk", builtin.keymaps, "Search keymaps")
+end
+
+local function setup_vcs_tool_keymap()
+    ms("n", "<leader>xs", ":Neogit<CR>", "Open Neogit")
+    ms("n", "<leader>xd", ":DiffviewOpen<CR>", "Open Diffview")
+    ms("n", "<leader>xh", ":DiffviewFileHistory<CR>", "Show file history")
+end
+
+local function setup_tab_keymap()
+    for i = 1, 9, 1 do
+        m(
+            "n",
+            string.format("<leader>%d", i),
+            string.format("%dgt", i),
+            string.format("Go to tab #%d", i)
+        )
+    end
+    m("n", "<leader>tc", ":tabclose<CR>", "Close tab")
+    m("n", "<leader>tn", ":tabNext", "Go to next tab")
+    m("n", "<leader>tn", ":tabprevious", "Go to previous tab")
+end
+
+--------------------------------------------------------------------------------
+-- section: setup
+--------------------------------------------------------------------------------
+function M.setup(map_leader, local_map_leader)
     vim.g.mapleader = map_leader or ","
     vim.g.maplocalleader = local_map_leader or ","
-end
 
-function M.setup_lsp_keymap(bufnr)
-    local keymap = {
-        {
-            key = "K",
-            action = vim.lsp.buf.hover,
-            options = {
-                buffer = bufnr,
-                desc = "hover [K]noledge with LSP",
-            },
-        },
-        {
-            key = "gd",
-            action = vim.lsp.buf.definition,
-            options = {
-                buffer = bufnr,
-                desc = "[g]o to [d]efinition with LSP",
-            },
-        },
-        {
-            key = "gy",
-            action = vim.lsp.buf.type_definition,
-            options = {
-                buffer = bufnr,
-                desc = "[g]o to t[y]pe definition with LSP",
-            },
-        },
-        {
-            key = "gi",
-            action = vim.lsp.buf.implementation,
-            options = {
-                buffer = bufnr,
-                desc = "[g]o to [i]mplementation with LSP",
-            },
-        },
-        {
-            key = "<leader>cr",
-            action = vim.lsp.buf.rename,
-            options = {
-                buffer = bufnr,
-                desc = "[r]ename variable with LSP",
-            },
-        },
-        {
-            key = "<leader>cf",
-            action = vim.lsp.buf.format,
-            options = {
-                buffer = bufnr,
-                desc = "[f]format document with LSP",
-            },
-        },
-        {
-            key = "<leader>dj",
-            action = vim.diagnostic.goto_next,
-            options = {
-                buffer = bufnr,
-                desc = "Go to next [d]iagnostic with LSP",
-            },
-        },
-        {
-            key = "<leader>dk",
-            action = vim.diagnostic.goto_prev,
-            options = {
-                buffer = bufnr,
-                desc = "Go to previous [d]iagnostic with LSP",
-            },
-        },
-    }
-
-    for _, bind in ipairs(keymap) do
-        vim.keymap.set("n", bind.key, bind.action, bind.options)
-    end
-end
-
-function M.setup_telescope_keymap()
-    local keymap = {
-        {
-            key = "<leader>?",
-            action = "oldfiles",
-            desc = "[?] Find recently opened files",
-        },
-        {
-            key = "<leader>sb",
-            action = "buffers",
-            desc = "[ ] Find existing buffers",
-        },
-        {
-            key = "<leader>/",
-            action = "current_buffer_fuzzy_find",
-            desc = "[/] Fuzzily search in current buffer]",
-        },
-        {
-            key = "<leader>sf",
-            action = "find_files",
-            desc = "[s]earch [f]iles",
-        },
-        {
-            key = "<leader>sh",
-            action = "help_tags",
-            desc = "[s]earch [h]elp",
-        },
-        {
-            key = "<leader>sw",
-            action = "grep_string",
-            desc = "[s]earch current [w]ord",
-        },
-        {
-            key = "<leader>sg",
-            action = "live_grep",
-            desc = "[s]earch by [g]rep",
-        },
-        {
-            key = "<leader>sd",
-            action = "diagnostics",
-            desc = "[s]earch [d]iagnotics",
-        },
-        {
-            key = "<leader>sk",
-            action = "keymaps",
-            desc = "[s]earch [k]eymaps",
-        },
-    }
-
-    local builtin = require("telescope.builtin")
-    for _, bind in ipairs(keymap) do
-        vim.keymap.set("n", bind.key, builtin[bind.action], { desc = bind.desc })
-    end
+    setup_lsp_keymap()
+    setup_telescope_keymap()
+    setup_vcs_tool_keymap()
+    setup_tab_keymap()
 end
 
 return M
