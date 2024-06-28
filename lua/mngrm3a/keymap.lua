@@ -112,20 +112,6 @@ local function setup_vcs_tool_keymap()
     ms("n", "<leader>xh", ":DiffviewFileHistory<CR>", "Show file history")
 end
 
-local function setup_tab_keymap()
-    for i = 1, 9, 1 do
-        m(
-            "n",
-            string.format("<leader>%d", i),
-            string.format("%dgt", i),
-            string.format("Go to tab #%d", i)
-        )
-    end
-    m("n", "<leader>tc", ":tabclose<CR>", "Close tab")
-    m("n", "<leader>tn", ":tabNext", "Go to next tab")
-    m("n", "<leader>tn", ":tabprevious", "Go to previous tab")
-end
-
 --------------------------------------------------------------------------------
 -- section: setup
 --------------------------------------------------------------------------------
@@ -136,7 +122,6 @@ function M.setup(map_leader, local_map_leader)
     setup_lsp_keymap()
     setup_telescope_keymap()
     setup_vcs_tool_keymap()
-    setup_tab_keymap()
 end
 
 return M
