@@ -5,10 +5,10 @@ local function setup_diagnostics_ui()
     vim.diagnostic.config({
         signs = {
             text = {
-                [vim.diagnostic.severity.ERROR] = '✘',
-                [vim.diagnostic.severity.WARN] = '▲',
-                [vim.diagnostic.severity.HINT] = '⚑',
-                [vim.diagnostic.severity.INFO] = '»',
+                [vim.diagnostic.severity.ERROR] = "✘",
+                [vim.diagnostic.severity.WARN] = "▲",
+                [vim.diagnostic.severity.HINT] = "⚑",
+                [vim.diagnostic.severity.INFO] = "»",
             },
         },
         float = {
@@ -52,33 +52,14 @@ local gruvbox_options =
 }
 
 -- -----------------------------------------------------------------------------
--- section: gitblame
--- -----------------------------------------------------------------------------
-local gitblame_options = {
-    enabled = true,
-    date_format = "%c",
-    message_template = "  <author> • <date> • <summary>",
-    message_when_not_committed = "  Not Committed Yet",
-    highlight_group = "Comment",
-    set_extmark_options = {},
-    display_virtual_text = true,
-    ignored_filetypes = {},
-    delay = 250,
-    virtual_text_column = nil,
-    use_blame_commit_file_urls = false,
-    schedule_event = "CursorMoved",
-    clear_event = "CursorMovedI",
-}
-
--- -----------------------------------------------------------------------------
 -- section: lualine
 -- -----------------------------------------------------------------------------
 local lualine_options = {
     options = {
         icons_enabled = true,
         theme = 'auto',
-        component_separators = { left = '', right = '' },
-        section_separators = { left = '', right = '' },
+        component_separators = { left = "", right = "" },
+        section_separators = { left = "", right = "" },
         disabled_filetypes = {
             statusline = {},
             winbar = {},
@@ -93,20 +74,18 @@ local lualine_options = {
         }
     },
     sections = {
-        lualine_a = { 'mode' },
-        lualine_b = { 'branch', 'diff', 'diagnostics' },
-        lualine_c = { 'filename' },
-        lualine_x = { function()
-            return require("gitblame").get_current_blame_text() or ""
-        end },
-        lualine_y = { 'filetype', 'encoding', 'fileformat' },
-        lualine_z = { 'progress', 'location' }
+        lualine_a = { "mode" },
+        lualine_b = { "branch", "diff", "diagnostics" },
+        lualine_c = { "filename" },
+        lualine_x = { "encoding", "fileformat", "filetype" },
+        lualine_y = { "progress" },
+        lualine_z = { "location" }
     },
     inactive_sections = {
         lualine_a = {},
         lualine_b = {},
-        lualine_c = { 'filename' },
-        lualine_x = { 'location' },
+        lualine_c = { "filename" },
+        lualine_x = { "location" },
         lualine_y = {},
         lualine_z = {}
     },
@@ -139,12 +118,6 @@ local noice_options = {
 }
 
 -- -----------------------------------------------------------------------------
--- section: fidget
--- -----------------------------------------------------------------------------
--- https://github.com/j-hui/fidget.nvim/blob/main/lua/fidget.lua
-local figet_options = {}
-
--- -----------------------------------------------------------------------------
 -- section: setup
 -- -----------------------------------------------------------------------------
 local M = {}
@@ -152,15 +125,8 @@ local M = {}
 function M.setup()
     require("gruvbox").setup(gruvbox_options)
     vim.cmd("colorscheme gruvbox")
-
-    require("gitblame").setup(gitblame_options)
-    vim.g.gitblame_display_virtual_text = 0
-
     require("lualine").setup(lualine_options)
-
-    -- require("fidget").setup(fidget_options)
     require("noice").setup(noice_options)
-
     setup_diagnostics_ui()
 end
 
