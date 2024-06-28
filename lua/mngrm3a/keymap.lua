@@ -1,5 +1,14 @@
 local M = {}
 
+
+local function m(mode, lhs, rhs, opts)
+    vim.keymap.set(mode, lhs, rhs, type(opts) == "string" and { desc = opts } or opts)
+end
+
+local function ms(mo, l, r, d)
+    m(mo, l, r, { desc = d, silent = true })
+end
+
 function M.mk_cmp_keymap(cmp, cmp_select)
     -- return {
     -- 	['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
@@ -23,12 +32,54 @@ function M.mk_cmp_keymap(cmp, cmp_select)
     }
 end
 
-local function m(mode, lhs, rhs, opts)
-    vim.keymap.set(mode, lhs, rhs, type(opts) == "string" and { desc = opts } or opts)
-end
+function M.mk_gitsigns_keymap(bufnr)
+    local gs = require('gitsigns')
 
-local function ms(mo, l, r, d)
-    m(mo, l, r, { desc = d, silent = true })
+    local function m_(mo, l, r, d)
+        m(mo, l, r, { desc = d, buffer = bufnr })
+    end
+
+    m_("n", "]c", function()
+            if vim.wo.diff then
+                vim.cmd.normal({ ']c', bang = true })
+            else
+                gs.nav_hunk('next')
+            end
+        end,
+        "Go to next hunk")
+    m_("n", "[c", function()
+            if vim.wo.diff then
+                vim.cmd.normal({ '[c', bang = true })
+            else
+                gs.nav_hunk('prev')
+            end
+        end,
+        "Go to previos hunk")
+
+    m_("n", "<leader>hs", gs.stage_hunk, "Stage hunk")
+    m_("v", "<leader>hs",
+        function() gs.stage_hunk { vim.fn.line("."), vim.fn.line("v") } end,
+        "Stage hunk")
+    m_("n", "<leader>hr", gs.reset_hunk, "Reset hunk")
+    m_("v", "<leader>hr",
+        function() gs.reset_hunk { vim.fn.line("."), vim.fn.line("v") } end,
+        "Reset hunk")
+    m_("n", "<leader>hu", gs.undo_stage_hunk, "Unstage hunk")
+    m_("n", "<leader>hp", gs.preview_hunk, "Preview hunk")
+    m_("n", "<leader>hx", gs.toggle_deleted, "Toggle deleted hunks")
+
+    m_("n", "<leader>hb", function() gs.blame_line { full = true } end,
+        "Show blame")
+    m_("n", "<leader>hB", gs.toggle_current_line_blame, "Toggle linewise blame")
+
+    m_("n", "<leader>hd", function() gs.diffthis({ split = "rightbelow" }) end, "Show diff for current hunk")
+    m_("n", "<leader>hD", function() gs.diffthis("~", { split = "rightbelow" }) end,
+        "Show diff for current buffer")
+
+    m_("n", "<leader>hS", gs.stage_buffer, "Stage buffer")
+    m_("n", "<leader>hR", gs.reset_buffer, "Reset buffer")
+
+    m_({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
 end
 
 local function setup_lsp_keymap()
