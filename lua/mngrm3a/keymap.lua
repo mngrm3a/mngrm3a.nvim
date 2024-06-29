@@ -70,7 +70,9 @@ function M.mk_gitsigns_keymap(bufnr)
         "Reset hunk")
     m_("n", "<leader>hu", gs.undo_stage_hunk, "Unstage hunk")
     m_("n", "<leader>hp", gs.preview_hunk, "Preview hunk")
+
     m_("n", "<leader>hx", gs.toggle_deleted, "Toggle deleted hunks")
+    m_("n", "<leader>hw", gs.toggle_word_diff, "Toggle word diff")
 
     -- INFO: https://github.com/lewis6991/gitsigns.nvim/blob/6b1a14eabcebbcca1b9e9163a26b2f8371364cb7/lua/gitsigns/actions.lua#L1317
     m_("n", "<leader>hv", function() gs.setqflist(0) end, "Show all hunks in current buffer")
@@ -80,8 +82,8 @@ function M.mk_gitsigns_keymap(bufnr)
         "Show blame")
     m_("n", "<leader>hB", gs.toggle_current_line_blame, "Toggle linewise blame")
 
-    m_("n", "<leader>hd", function() gs.diffthis("index", diff_split) end, "Show diff for current hunk")
-    m_("n", "<leader>hD", function() gs.diffthis("~", diff_split) end,
+    m_("n", "<leader>hd", gs.diffthis, "Show diff for current hunk")
+    m_("n", "<leader>hD", function() gs.diffthis("~") end,
         "Show diff for current buffer")
 
     m_("n", "<leader>hS", gs.stage_buffer, "Stage all hunks")
@@ -126,11 +128,11 @@ local function setup_vcs_tool_keymap()
 end
 
 local function setup_buffer_keymap()
-    m("n", "<leader>bc", ":bdelete<CR>", "Delete buffer")
-    m("n", "<leader>bk", ":bNext<CR>", "Move to next buffer")
-    m("n", "<leader>bj", ":bprevious<CR>", "Move to next buffer")
-    m("n", "<leader>bh", ":bfirst<CR>", "Move to first buffer")
-    m("n", "<leader>bl", ":blast<CR>", "Move to next buffer")
+    m("n", "<leader>bc", ":bdelete<CR>", o("Delete buffer", true))
+    m("n", "<leader>bk", ":bNext<CR>", o("Move to next buffer", true))
+    m("n", "<leader>bj", ":bprevious<CR>", o("Move to previous buffer", true))
+    m("n", "<leader>bh", ":bfirst<CR>", o("Move to first buffer", true))
+    m("n", "<leader>bl", ":blast<CR>", o("Move to last buffer", true))
 end
 
 --------------------------------------------------------------------------------
