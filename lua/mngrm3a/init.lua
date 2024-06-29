@@ -1,7 +1,7 @@
 local M = {}
 
 function M.setup()
-    require("mngrm3a.keymap").setup(",", ",")
+    require("mngrm3a.keymap").setup(" ", " ")
     require("mngrm3a.options")
     require("mngrm3a.ui").setup()
     require("mngrm3a.treesitter").setup()
