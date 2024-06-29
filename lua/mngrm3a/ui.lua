@@ -77,7 +77,7 @@ local lualine_options = {
         lualine_a = { "mode" },
         lualine_b = { "branch", "diff", "diagnostics" },
         lualine_c = { "filename" },
-        lualine_x = { "encoding", "fileformat", "filetype" },
+        lualine_x = { "encoding", "fileformat", "filetype", "searchcount", "selectioncount" },
         lualine_y = { "progress" },
         lualine_z = { "location" }
     },
@@ -89,8 +89,10 @@ local lualine_options = {
         lualine_y = {},
         lualine_z = {}
     },
-    tabline = {},
-    winbar = {},
+    tabline = {
+        lualine_a = { "buffers" },
+        lualine_z = { "tabs" }
+    },
     inactive_winbar = {},
     extensions = {}
 }
