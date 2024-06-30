@@ -85,20 +85,12 @@ function M.setup()
     local capabilities = { capabilities = mk_capabilities() }
 
     vim.lsp.set_log_level('debug')
+
     setup_autoformat_autocmd()
     setup_highlight_symbol_autocmd()
 
-    lspconfig.lua_ls.setup(capabilities)
-
-    lspconfig.nil_ls.setup({
-        settings = {
-            ["nil"] = {
-                formatting = {
-                    command = { "nixfmt" }
-                }
-            }
-        }
-    })
+    require("mngrm3a.lsp.lua")(lspconfig, capabilities)
+    require("mngrm3a.lsp.nix")(lspconfig, capabilities)
 end
 
 return M
