@@ -5,10 +5,6 @@ local function m(mode, lhs, rhs, opts)
     vim.keymap.set(mode, lhs, rhs, type(opts) == "string" and { desc = opts } or opts)
 end
 
-local function o(desc, silent, noreamp)
-    return { desc = desc, silent = silent, noremap = noreamp }
-end
-
 function M.mk_cmp_keymap(cmp, cmp_select)
     -- return {
     -- 	['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
@@ -32,78 +28,89 @@ function M.mk_cmp_keymap(cmp, cmp_select)
     }
 end
 
-function M.mk_gitsigns_keymap(bufnr)
+function M.setup_gitsigns_keymap(bufnr)
     local gs = require('gitsigns')
 
-    -- INFO: https://github.com/lewis6991/gitsigns.nvim/blob/6b1a14eabcebbcca1b9e9163a26b2f8371364cb7/lua/gitsigns/actions.lua#L1149
-    -- local diff_split = { split = "rightbelow" }
-    local diff_split = nil
-
-    local function m_(mo, l, r, d)
-        m(mo, l, r, { desc = d, buffer = bufnr })
+    local function o(desc)
+        return { desc = desc, buffer = bufnr }
     end
 
-    m_("n", "]c", function()
+    m("n", "]c", function()
             if vim.wo.diff then
                 vim.cmd.normal({ ']c', bang = true })
             else
                 gs.nav_hunk('next')
             end
         end,
-        "Go to next hunk")
-    m_("n", "[c", function()
+        o("Go to next hunk"))
+    m("n", "[c", function()
             if vim.wo.diff then
                 vim.cmd.normal({ '[c', bang = true })
             else
                 gs.nav_hunk('prev')
             end
         end,
-        "Go to previos hunk")
+        o("Go to previos hunk"))
 
-    m_("n", "<leader>hs", gs.stage_hunk, "Stage hunk")
-    m_("v", "<leader>hs",
+    m("n", "<leader>hs", gs.stage_hunk, o("Stage hunk"))
+    m("v", "<leader>hs",
         function() gs.stage_hunk { vim.fn.line("."), vim.fn.line("v") } end,
-        "Stage hunk")
-    m_("n", "<leader>hr", gs.reset_hunk, "Reset hunk")
-    m_("v", "<leader>hr",
+        o("Stage hunk"))
+    m("n", "<leader>hr", gs.reset_hunk, o("Reset hunk"))
+    m("v", "<leader>hr",
         function() gs.reset_hunk { vim.fn.line("."), vim.fn.line("v") } end,
-        "Reset hunk")
-    m_("n", "<leader>hu", gs.undo_stage_hunk, "Unstage hunk")
-    m_("n", "<leader>hp", gs.preview_hunk, "Preview hunk")
+        o("Reset hunk"))
+    m("n", "<leader>hu", gs.undo_stage_hunk, o("Unstage hunk"))
+    m("n", "<leader>hp", gs.preview_hunk, o("Preview hunk"))
 
-    m_("n", "<leader>hx", gs.toggle_deleted, "Toggle deleted hunks")
-    m_("n", "<leader>hw", gs.toggle_word_diff, "Toggle word diff")
+    m("n", "<leader>hx", gs.toggle_deleted, o("Toggle deleted hunks"))
+    m("n", "<leader>hw", gs.toggle_word_diff, o("Toggle word diff"))
 
     -- INFO: https://github.com/lewis6991/gitsigns.nvim/blob/6b1a14eabcebbcca1b9e9163a26b2f8371364cb7/lua/gitsigns/actions.lua#L1317
-    m_("n", "<leader>hv", function() gs.setqflist(0) end, "Show all hunks in current buffer")
-    m_("n", "<leader>hV", function() gs.setqflist("all") end, "Show all hunks in working directory")
+    m("n", "<leader>hv", function() gs.setqflist(0) end,
+        o("Show all hunks in current buffer"))
+    m("n", "<leader>hV", function() gs.setqflist("all") end,
+        o("Show all hunks in working directory"))
 
-    m_("n", "<leader>hb", function() gs.blame_line { full = true } end,
-        "Show blame")
-    m_("n", "<leader>hB", gs.toggle_current_line_blame, "Toggle linewise blame")
+    m("n", "<leader>hb", function() gs.blame_line { full = true } end,
+        o("Show blame"))
+    m("n", "<leader>hB", gs.toggle_current_line_blame, o("Toggle linewise blame"))
 
-    m_("n", "<leader>hd", gs.diffthis, "Show diff for current hunk")
-    m_("n", "<leader>hD", function() gs.diffthis("~") end,
-        "Show diff for current buffer")
+    m("n", "<leader>hd", gs.diffthis, o("Show diff for current hunk"))
+    m("n", "<leader>hD", function() gs.diffthis("~") end,
+        o("Show diff for current buffer"))
 
-    m_("n", "<leader>hS", gs.stage_buffer, "Stage all hunks")
-    m_("n", "<leader>hR", gs.reset_buffer, "Reset all hunks")
+    m("n", "<leader>hS", gs.stage_buffer, o("Stage all hunks"))
+    m("n", "<leader>hR", gs.reset_buffer, o("Reset all hunks"))
 
-    m_({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
+    m({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
 end
 
-function M.setup_lsp_keymap()
-    m("n", "K", vim.lsp.buf.hover, "Hover knowledge")
-    m("n", "<leader>jd", vim.lsp.buf.definition, "Jump to definition")
-    m("n", "<leader>jt", vim.lsp.buf.type_definition, "Jump to type definition")
-    m("n", "<leader>ji", vim.lsp.buf.implementation, "Jump to implementation")
-    m("n", "<leader>ar", vim.lsp.buf.rename, "Rename identifier")
-    m("n", "<leader>af", vim.lsp.buf.format, "Format buffer")
-    m("n", "<leader>dj", vim.diagnostic.goto_next, "Go to next diagnostic")
-    m("n", "<leader>dk", vim.diagnostic.goto_prev, "Go to previous diagnostic")
+function M.setup_lsp_keymap(bufnr)
+    local function o(desc)
+        return { desc = desc, buffer = bufnr }
+    end
+
+    local function toggle_inlay_hints()
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+    end
+
+    m("n", "K", vim.lsp.buf.hover, o("Hover knowledge"))
+    m("n", "<leader>gd", vim.lsp.buf.definition, o("Go to definition"))
+    m("n", "<leader>gt", vim.lsp.buf.type_definition, o("Go to type definition"))
+    m("n", "<leader>gi", vim.lsp.buf.implementation, o("Go to implementation"))
+    m("n", "<leader>gn", vim.diagnostic.goto_next, o("Go to next diagnostic"))
+    m("n", "<leader>gp", vim.diagnostic.goto_prev, o("Go to previous diagnostic"))
+
+    m("n", "<leader>cr", vim.lsp.buf.rename, o("Rename identifier"))
+    m("n", "<leader>cf", vim.lsp.buf.format, o("Format buffer"))
+    m("n", "<leader>cl", vim.lsp.codelens.run, o("Run codelens"))
+    m("n", "<leader>ca", vim.lsp.buf.code_action, o("Show code actions"))
+    m("n", "<leader>ci", vim.lsp.buf.signature_help, o("Show signature help"))
+    m("n", "<leader>ch", toggle_inlay_hints, o("Show signature help"))
 end
 
-local function setup_telescope_keymap()
+function M.setup_telescope_keymap()
     local builtin = require("telescope.builtin")
     m("n", "<leader>?", builtin.oldfiles, "Find recently opened files")
     m("n", "<leader>sb", builtin.buffers, "Find existing buffers")
@@ -121,18 +128,16 @@ local function setup_telescope_keymap()
     m("n", "<leader>sc", builtin.git_commits, "Search commits")
 end
 
-local function setup_vcs_tool_keymap()
-    m("n", "<leader>xs", ":Neogit<CR>", o("Open Neogit", true))
-    m("n", "<leader>xd", ":DiffviewOpen<CR>", o("Open Diffview", true))
-    m("n", "<leader>xh", ":DiffviewFileHistory<CR>", o("Show file history", true))
-end
+function M.setup_vcs_tool_keymap()
+    local function o(desc)
+        return { desc = desc, silent = true, noremap = true }
+    end
 
-local function setup_buffer_keymap()
-    m("n", "<leader>bc", ":bdelete<CR>", o("Delete buffer", true))
-    m("n", "<leader>bk", ":bNext<CR>", o("Move to next buffer", true))
-    m("n", "<leader>bj", ":bprevious<CR>", o("Move to previous buffer", true))
-    m("n", "<leader>bh", ":bfirst<CR>", o("Move to first buffer", true))
-    m("n", "<leader>bl", ":blast<CR>", o("Move to last buffer", true))
+    m("n", "<leader>xg", ":Neogit<CR>", o("Open Neogit"))
+    m("n", "<leader>xd", ":DiffviewOpen<CR>", o("Open Diffview"))
+    m("n", "<leader>xh", ":DiffviewFileHistory<CR>", o("Show file history"))
+    m("n", "<leader>xu", ":UndotreeToggle<CR>", o("Toggle Undotree"))
+    m("n", "<leader>xe", ":30Sexplore!<CR>", o("Show Netrw"))
 end
 
 --------------------------------------------------------------------------------
@@ -142,11 +147,14 @@ function M.setup(map_leader, local_map_leader)
     vim.g.mapleader = map_leader or ","
     vim.g.maplocalleader = local_map_leader or ","
 
-    setup_lsp_keymap()
-    setup_telescope_keymap()
-    setup_vcs_tool_keymap()
-    setup_buffer_keymap()
-    setup_buffer_keymap()
+    M.setup_telescope_keymap()
+    M.setup_vcs_tool_keymap()
+
+    vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(args)
+            M.setup_lsp_keymap(args.buf)
+        end
+    })
 end
 
 return M
