@@ -92,7 +92,7 @@ function M.mk_gitsigns_keymap(bufnr)
     m_({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
 end
 
-local function setup_lsp_keymap()
+function M.setup_lsp_keymap()
     m("n", "K", vim.lsp.buf.hover, "Hover knowledge")
     m("n", "<leader>jd", vim.lsp.buf.definition, "Jump to definition")
     m("n", "<leader>jt", vim.lsp.buf.type_definition, "Jump to type definition")
