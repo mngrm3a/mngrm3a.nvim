@@ -88,12 +88,14 @@ end
 
 function M.setup_lsp_keymap(bufnr)
     local function o(desc)
-        return { desc = desc, buffer = bufnr }
+        return { desc = desc, buffer = bufnr, silent = true, noremap = true }
     end
 
     local function toggle_inlay_hints()
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
     end
+
+    m("n", "<leader>xl", ":LspLog<CR>", o("Open LSP log"))
 
     m("n", "K", vim.lsp.buf.hover, o("Hover knowledge"))
     m("n", "<leader>gd", vim.lsp.buf.definition, o("Go to definition"))
@@ -107,7 +109,7 @@ function M.setup_lsp_keymap(bufnr)
     m("n", "<leader>cl", vim.lsp.codelens.run, o("Run codelens"))
     m("n", "<leader>ca", vim.lsp.buf.code_action, o("Show code actions"))
     m("n", "<leader>ci", vim.lsp.buf.signature_help, o("Show signature help"))
-    m("n", "<leader>ch", toggle_inlay_hints, o("Show signature help"))
+    m("n", "<leader>ch", toggle_inlay_hints, o("Toggle inlay hints"))
 end
 
 function M.setup_telescope_keymap()
