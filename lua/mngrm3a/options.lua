@@ -1,4 +1,5 @@
-vim.opt.guicursor = "n-v-c:block,i-ci-ve:block,r-cr:hor80,o:hor50,v-c-i-ci-ve:blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"
+vim.opt.guicursor =
+"n-v-c:block,i-ci-ve:block,r-cr:hor80,o:hor50,v-c-i-ci-ve:blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"
 vim.opt.cursorline = true
 
 vim.opt.nu = true
@@ -32,5 +33,8 @@ vim.opt.updatetime = 400
 
 vim.opt.colorcolumn = "80"
 
-vim.opt.listchars="eol:$,tab:>-,trail:~,extends:>,precedes:<"
+vim.opt.listchars = "eol:$,tab:>-,trail:~,extends:>,precedes:<"
 vim.opt.list = true;
+
+vim.opt.spelllang = { "en_us", "de_de" }
+vim.opt.spell = true
