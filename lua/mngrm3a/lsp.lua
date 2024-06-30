@@ -70,27 +70,32 @@ end
 -- -----------------------------------------------------------------------------
 -- section: setup
 -- -----------------------------------------------------------------------------
-local function mk_capabilities()
-    return vim.tbl_deep_extend(
+local function with_capabilities(opts)
+    local capabilities = vim.tbl_deep_extend(
         "force",
         {},
         vim.lsp.protocol.make_client_capabilities(),
-        require("cmp_nvim_lsp").default_capabilities())
+        require("cmp_nvim_lsp").default_capabilities()
+    )
+
+    return vim.tbl_deep_extend(
+        "force",
+        { capabilities = capabilities },
+        opts
+    )
 end
 
 local M = {}
 
-function M.setup()
-    local lspconfig = require("lspconfig")
-    local capabilities = { capabilities = mk_capabilities() }
-
-    vim.lsp.set_log_level('debug')
+function M.setup(log_level)
+    log_level = log_level or vim.log.levels.DEBUG
+    vim.lsp.set_log_level(log_level)
 
     setup_autoformat_autocmd()
     setup_highlight_symbol_autocmd()
 
-    require("mngrm3a.lsp.lua")(lspconfig, capabilities)
-    require("mngrm3a.lsp.nix")(lspconfig, capabilities)
+    require("mngrm3a.lsp.lua")(with_capabilities)
+    require("mngrm3a.lsp.nix")(with_capabilities)
 end
 
 return M

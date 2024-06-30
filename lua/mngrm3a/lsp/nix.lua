@@ -1,6 +1,5 @@
-return function(lspconfig, capabilities)
-    lspconfig.nil_ls.setup({
-        capabilities = capabilities,
+return function(with_capabilities)
+    require("lspconfig").nil_ls.setup(with_capabilities {
         settings = {
             ["nil"] = {
                 formatting = {
