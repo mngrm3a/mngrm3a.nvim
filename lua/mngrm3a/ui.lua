@@ -75,11 +75,11 @@ local lualine_options = {
     },
     sections = {
         lualine_a = { "mode" },
-        lualine_b = { "branch", "diff", "diagnostics" },
+        lualine_b = { "branch", "diff" },
         lualine_c = { "filename" },
-        lualine_x = { "encoding", "fileformat", "filetype", "searchcount", "selectioncount" },
-        lualine_y = { "progress" },
-        lualine_z = { "location" }
+        lualine_x = { "searchcount", "selectioncount", "diagnostics" },
+        lualine_y = { "encoding", "fileformat", "filetype" },
+        lualine_z = { "location", "progress" }
     },
     inactive_sections = {
         lualine_a = {},
