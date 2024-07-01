@@ -120,7 +120,7 @@ local M = {}
 
 function M.setup()
     require("todo-comments").setup()
-    require("Comment").setup()
+    -- require("Comment").setup()
 end
 
 return M
