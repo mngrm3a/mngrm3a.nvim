@@ -1,13 +1,18 @@
 local iron_options = {
     config = {
-        -- Whether a repl should be discarded or not
         scratch_repl = true,
-        -- Your repl definitions come here
         repl_definition = {
-            sh = { command = { "zsh" } }
+            sh = { command = { "zsh" } },
+            haskell = {
+                command = function(meta)
+                    return {
+                        "cabal",
+                        "repl",
+                        vim.api.nvim_buf_get_name(meta.current_bufnr)
+                    }
+                end
+            }
         },
-        -- How the repl window will be displayed
-        -- See below for more information
         repl_open_cmd = require("iron.view").split.horizontal.botright(0.25, {
             relativenumber = false,
             signcolumn = "no"
@@ -17,7 +22,7 @@ local iron_options = {
     highlight = {
         italic = true
     },
-    ignore_blank_lines = true, -- ignore blank lines when sending visual select lines
+    ignore_blank_lines = true,
 }
 
 local M = {}
