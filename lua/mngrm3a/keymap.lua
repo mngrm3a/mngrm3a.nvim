@@ -136,6 +136,36 @@ function M.setup(map_leader, local_map_leader)
     m("n", "<leader>sg", builtin.git_branches, "Search branches")
     m("n", "<leader>sc", builtin.git_commits, "Search commits")
 
+    -- iron
+    local ic = require("iron.core")
+    local im = require("iron.marks")
+    local r = require("mngrm3a.repl")
+
+    m('n', '<leader>rs', '<CMD>IronRepl<CR>', "Start REPL")
+    m('n', '<leader>rS', '<CMD>IronRestart<CR>', "Restart REPL")
+    m('n', '<leader>rq', '<CMD>IronHide<CR>', "Hide REPL")
+    m('n', '<leader>rQ', ic.close_repl, "Close REPL")
+    m('n', '<leader>rg', '<CMD>IronFocus<CR>', "Focus REPL")
+
+    m('n', '<leader>rc', function() ic.run_motion("send_motion") end, "Send motion")
+    m('v', '<leader>rc', ic.visual_send, "Send motion")
+    m('n', '<leader>rf', ic.send_file, "Send file")
+    m('n', '<leader>rl', ic.send_line, "Send line")
+    m('n', '<leader>rp', ic.send_paragraph, "Send paragraph")
+    m('n', '<leader>ru', ic.send_until_cursor, "Send until cursor")
+    m('n', '<leader>rm', ic.send_mark, "Send mark")
+    m('n', '<leader>rmc', function() ic.run_motion("mark_motion") end, "Send mark")
+    m('v', '<leader>rmc', ic.mark_visual, "Send mark")
+    m('n', '<leader>rmd', im.drop_last, "Remove mark")
+
+    local function iron_send_special(code)
+        return function() ic.send(nil, string.char(code)) end
+    end
+
+    m('n', '<leader>r<CR>', iron_send_special(13), "Send return")
+    m('n', '<leader>ri', iron_send_special(03), "Send interrupt")
+    m('n', '<leader>rx', iron_send_special(12), "Send interrupt")
+
     -- tools
     m("n", "<leader>tg", "<CMD>Neogit<CR>", "Open Neogit")
     m("n", "<leader>td", "<CMD>DiffviewOpen<CR>", "Open Diffview")
