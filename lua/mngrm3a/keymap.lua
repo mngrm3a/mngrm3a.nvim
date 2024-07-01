@@ -1,8 +1,10 @@
 local M = {}
 
-
-local function m(mode, lhs, rhs, opts)
-    vim.keymap.set(mode, lhs, rhs, type(opts) == "string" and { desc = opts } or opts)
+local function mk_map(buffer)
+    return function(mode, lhs, rhs, desc)
+        vim.keymap.set(mode, lhs, rhs,
+            { desc = desc, buffer = buffer, silent = true, noremap = true })
+    end
 end
 
 function M.mk_cmp_keymap(cmp, cmp_select)
@@ -28,12 +30,9 @@ function M.mk_cmp_keymap(cmp, cmp_select)
     }
 end
 
-function M.setup_gitsigns_keymap(bufnr)
+function M.setup_gitsigns_keymap(buffer)
+    local m = mk_map(buffer)
     local gs = require('gitsigns')
-
-    local function o(desc)
-        return { desc = desc, buffer = bufnr }
-    end
 
     m("n", "]c", function()
             if vim.wo.diff then
@@ -42,7 +41,7 @@ function M.setup_gitsigns_keymap(bufnr)
                 gs.nav_hunk('next')
             end
         end,
-        o("Go to next hunk"))
+        "Go to next hunk")
     m("n", "[c", function()
             if vim.wo.diff then
                 vim.cmd.normal({ '[c', bang = true })
@@ -50,69 +49,77 @@ function M.setup_gitsigns_keymap(bufnr)
                 gs.nav_hunk('prev')
             end
         end,
-        o("Go to previos hunk"))
+        "Go to previos hunk")
 
-    m("n", "<leader>hs", gs.stage_hunk, o("Stage hunk"))
+    m("n", "<leader>hs", gs.stage_hunk, "Stage hunk")
     m("v", "<leader>hs",
         function() gs.stage_hunk { vim.fn.line("."), vim.fn.line("v") } end,
-        o("Stage hunk"))
-    m("n", "<leader>hr", gs.reset_hunk, o("Reset hunk"))
+        "Stage hunk")
+    m("n", "<leader>hr", gs.reset_hunk, "Reset hunk")
     m("v", "<leader>hr",
         function() gs.reset_hunk { vim.fn.line("."), vim.fn.line("v") } end,
-        o("Reset hunk"))
-    m("n", "<leader>hu", gs.undo_stage_hunk, o("Unstage hunk"))
-    m("n", "<leader>hp", gs.preview_hunk, o("Preview hunk"))
+        "Reset hunk")
+    m("n", "<leader>hu", gs.undo_stage_hunk, "Unstage hunk")
+    m("n", "<leader>hp", gs.preview_hunk, "Preview hunk")
 
-    m("n", "<leader>hx", gs.toggle_deleted, o("Toggle deleted hunks"))
-    m("n", "<leader>hw", gs.toggle_word_diff, o("Toggle word diff"))
+    m("n", "<leader>hx", gs.toggle_deleted, "Toggle deleted hunks")
+    m("n", "<leader>hw", gs.toggle_word_diff, "Toggle word diff")
 
     -- INFO: https://github.com/lewis6991/gitsigns.nvim/blob/6b1a14eabcebbcca1b9e9163a26b2f8371364cb7/lua/gitsigns/actions.lua#L1317
     m("n", "<leader>hv", function() gs.setqflist(0) end,
-        o("Show all hunks in current buffer"))
+        "Show all hunks in current buffer")
     m("n", "<leader>hV", function() gs.setqflist("all") end,
-        o("Show all hunks in working directory"))
+        "Show all hunks in working directory")
 
     m("n", "<leader>hb", function() gs.blame_line { full = true } end,
-        o("Show blame"))
-    m("n", "<leader>hB", gs.toggle_current_line_blame, o("Toggle linewise blame"))
+        "Show blame")
+    m("n", "<leader>hB", gs.toggle_current_line_blame, "Toggle linewise blame")
 
-    m("n", "<leader>hd", gs.diffthis, o("Show diff for current hunk"))
+    m("n", "<leader>hd", gs.diffthis, "Show diff for current hunk")
     m("n", "<leader>hD", function() gs.diffthis("~") end,
-        o("Show diff for current buffer"))
+        "Show diff for current buffer")
 
-    m("n", "<leader>hS", gs.stage_buffer, o("Stage all hunks"))
-    m("n", "<leader>hR", gs.reset_buffer, o("Reset all hunks"))
+    m("n", "<leader>hS", gs.stage_buffer, "Stage all hunks")
+    m("n", "<leader>hR", gs.reset_buffer, "Reset all hunks")
 
     m({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
 end
 
-function M.setup_lsp_keymap(bufnr)
-    local function o(desc)
-        return { desc = desc, buffer = bufnr, silent = true, noremap = true }
-    end
+function M.setup_lsp_keymap(buffer)
+    local m = mk_map(buffer)
 
     local function toggle_inlay_hints()
-        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
     end
 
-    m("n", "<leader>xl", ":LspLog<CR>", o("Open LSP log"))
+    m("n", "<leader>xl", ":LspLog<CR>", "Open LSP log")
 
-    m("n", "K", vim.lsp.buf.hover, o("Hover knowledge"))
-    m("n", "<leader>gd", vim.lsp.buf.definition, o("Go to definition"))
-    m("n", "<leader>gt", vim.lsp.buf.type_definition, o("Go to type definition"))
-    m("n", "<leader>gi", vim.lsp.buf.implementation, o("Go to implementation"))
-    m("n", "<leader>gn", vim.diagnostic.goto_next, o("Go to next diagnostic"))
-    m("n", "<leader>gp", vim.diagnostic.goto_prev, o("Go to previous diagnostic"))
+    m("n", "K", vim.lsp.buf.hover, "Hover knowledge")
+    m("n", "<leader>gd", vim.lsp.buf.definition, "Go to definition")
+    m("n", "<leader>gt", vim.lsp.buf.type_definition, "Go to type definition")
+    m("n", "<leader>gi", vim.lsp.buf.implementation, "Go to implementation")
+    m("n", "<leader>gn", vim.diagnostic.goto_next, "Go to next diagnostic")
+    m("n", "<leader>gp", vim.diagnostic.goto_prev, "Go to previous diagnostic")
 
-    m("n", "<leader>cr", vim.lsp.buf.rename, o("Rename identifier"))
-    m("n", "<leader>cf", vim.lsp.buf.format, o("Format buffer"))
-    m("n", "<leader>cl", vim.lsp.codelens.run, o("Run codelens"))
-    m("n", "<leader>ca", vim.lsp.buf.code_action, o("Show code actions"))
-    m("n", "<leader>ci", vim.lsp.buf.signature_help, o("Show signature help"))
-    m("n", "<leader>ch", toggle_inlay_hints, o("Toggle inlay hints"))
+    m("n", "<leader>cr", vim.lsp.buf.rename, "Rename identifier")
+    m("n", "<leader>cf", vim.lsp.buf.format, "Format buffer")
+    m("n", "<leader>cl", vim.lsp.codelens.run, "Run codelens")
+    m("n", "<leader>ca", vim.lsp.buf.code_action, "Show code actions")
+    m("n", "<leader>ci", vim.lsp.buf.signature_help, "Show signature help")
+    m("n", "<leader>ch", toggle_inlay_hints, "Toggle inlay hints")
 end
 
-function M.setup_telescope_keymap()
+--------------------------------------------------------------------------------
+-- section: setup
+--------------------------------------------------------------------------------
+function M.setup(map_leader, local_map_leader)
+    local m = mk_map()
+
+    -- leaders
+    vim.g.mapleader = map_leader or ","
+    vim.g.maplocalleader = local_map_leader or ","
+
+    -- telescope
     local builtin = require("telescope.builtin")
     m("n", "<leader>?", builtin.oldfiles, "Find recently opened files")
     m("n", "<leader>sb", builtin.buffers, "Find existing buffers")
@@ -128,30 +135,21 @@ function M.setup_telescope_keymap()
     m("n", "<leader>sq", builtin.quickfix, "Search quickfixes")
     m("n", "<leader>sg", builtin.git_branches, "Search branches")
     m("n", "<leader>sc", builtin.git_commits, "Search commits")
-end
 
-function M.setup_vcs_tool_keymap()
-    local function o(desc)
-        return { desc = desc, silent = true, noremap = true }
-    end
+    -- tools
+    m("n", "<leader>tg", "<CMD>Neogit<CR>", "Open Neogit")
+    m("n", "<leader>td", "<CMD>DiffviewOpen<CR>", "Open Diffview")
+    m("n", "<leader>th", "<CMD>DiffviewFileHistory<CR>", "Show file history")
+    m("n", "<leader>tu", "<CMD>UndotreeToggle<CR>", "Toggle Undotree")
+    m("n", "<leader>te", "<CMD>30Sexplore!<CR>", "Show Netrw")
 
-    m("n", "<leader>xg", ":Neogit<CR>", o("Open Neogit"))
-    m("n", "<leader>xd", ":DiffviewOpen<CR>", o("Open Diffview"))
-    m("n", "<leader>xh", ":DiffviewFileHistory<CR>", o("Show file history"))
-    m("n", "<leader>xu", ":UndotreeToggle<CR>", o("Toggle Undotree"))
-    m("n", "<leader>xe", ":30Sexplore!<CR>", o("Show Netrw"))
-end
+    -- buffers
+    m("n", "<leader>z", "<CMD>bprevious<CR>", "Go to previous buffer")
+    m("n", "<leader>Z", "<CMD>bfirst<CR>", "Go to first buffer")
+    m("n", "<leader>x", "<CMD>bnext<CR>", "Go to next buffer")
+    m("n", "<leader>X", "<CMD>blast<CR>", "Go to last buffer")
 
---------------------------------------------------------------------------------
--- section: setup
---------------------------------------------------------------------------------
-function M.setup(map_leader, local_map_leader)
-    vim.g.mapleader = map_leader or ","
-    vim.g.maplocalleader = local_map_leader or ","
-
-    M.setup_telescope_keymap()
-    M.setup_vcs_tool_keymap()
-
+    -- lsp
     vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
             M.setup_lsp_keymap(args.buf)
