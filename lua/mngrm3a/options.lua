@@ -25,12 +25,12 @@ vim.opt.incsearch = true
 vim.opt.termguicolors = true
 
 vim.opt.scrolloff = 8
-vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 
 -- time after the last keypress in ms until CursorHold is triggered
 vim.opt.updatetime = 400
 
+vim.opt.signcolumn = "yes:3"
 vim.opt.colorcolumn = "80"
 
 vim.opt.listchars = "eol:$,tab:>-,trail:~,extends:>,precedes:<"
