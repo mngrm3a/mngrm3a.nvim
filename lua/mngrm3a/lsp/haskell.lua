@@ -156,7 +156,7 @@ local hls_default_settings = {
 }
 
 -- INFO: https://github.com/mrcjkb/haskell-tools.nvim/blob/56a4e572e9d8ad300e03a5d8fcc17b8cf679ad17/lua/haskell-tools/lsp/init.lua#L21
-local function on_init_handler(client, _)
+local function on_init_codelens_handler(client, _)
     local buffers = vim.lsp.get_buffers_by_client_id(client.id)
 
     if buffers and #buffers then
@@ -171,7 +171,7 @@ local function on_init_handler(client, _)
 end
 
 -- INFO: https://github.com/mrcjkb/haskell-tools.nvim/blob/56a4e572e9d8ad300e03a5d8fcc17b8cf679ad17/lua/haskell-tools/lsp/init.lua#L156
-local function on_attach_handler(client, buffer)
+local function on_attach_codelens_handler(client, buffer)
     if client and client.server_capabilities.codeLensProvider then
         vim.api.nvim_create_autocmd({ "InsertLeave", "BufWritePost", "TextChanged" }, {
             buffer = buffer,
@@ -185,8 +185,13 @@ end
 
 local function setup_haskell_lsp(with_capabilities, log_level)
     require("lspconfig").hls.setup(with_capabilities {
-        on_attach = on_attach_handler,
-        on_init = on_init_handler,
+        on_attach = function(client, buffer)
+            vim.bo.tabstop = 2
+            vim.bo.softtabstop = 2
+            vim.bo.shiftwidth = 2
+            on_attach_codelens_handler(client, buffer)
+        end,
+        on_init = on_init_codelens_handler,
         settings = { haskell = hls_default_settings }
     })
 end
