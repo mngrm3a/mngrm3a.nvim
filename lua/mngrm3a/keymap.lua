@@ -179,6 +179,12 @@ function M.setup(map_leader, local_map_leader)
     m("n", "<leader>x", "<CMD>bnext<CR>", "Go to next buffer")
     m("n", "<leader>X", "<CMD>blast<CR>", "Go to last buffer")
 
+    -- movement
+    m("n", "<C-d>", "<C-d>zz", "Scroll downwards")
+    m("n", "<C-u>", "<C-u>zz", "Scroll upwards")
+    m("n", "j", "jzz", "Scroll downwards")
+    m("n", "k", "kzz", "Scroll upwards")
+
     -- lsp
     vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
