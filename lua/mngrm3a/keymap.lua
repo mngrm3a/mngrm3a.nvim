@@ -98,9 +98,9 @@ function M.setup_lsp_keymap(buffer)
     m("n", "<leader>gd", vim.lsp.buf.definition, "Go to definition")
     m("n", "<leader>gt", vim.lsp.buf.type_definition, "Go to type definition")
     m("n", "<leader>gi", vim.lsp.buf.implementation, "Go to implementation")
-    m("n", "<leader>gn", vim.diagnostic.goto_next, "Go to next diagnostic")
-    m("n", "<leader>gp", vim.diagnostic.goto_prev, "Go to previous diagnostic")
-
+    m("n", "<leader>cd",
+        function() vim.diagnostic.open_float({ severity_sort = true }) end,
+        "Rename identifier")
     m("n", "<leader>cr", vim.lsp.buf.rename, "Rename identifier")
     m("n", "<leader>cf", vim.lsp.buf.format, "Format buffer")
     m("n", "<leader>cl", vim.lsp.codelens.run, "Run codelens")
