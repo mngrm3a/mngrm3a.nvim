@@ -94,9 +94,11 @@ function M.setup(log_level)
     setup_autoformat_autocmd()
     setup_highlight_symbol_autocmd()
 
+    require("mngrm3a.lsp.shell")(with_capabilities)
     require("mngrm3a.lsp.lua")(with_capabilities)
     require("mngrm3a.lsp.nix")(with_capabilities)
     require("mngrm3a.lsp.haskell")(with_capabilities)
+    require("mngrm3a.lsp.go")(with_capabilities)
 end
 
 return M
