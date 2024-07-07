@@ -11,7 +11,7 @@ function M.setup()
     require("mngrm3a.repl").setup()
     require("mngrm3a.vcs").setup()
     require("mngrm3a.comments").setup()
-    require("mngrm3a.utils").setup()
+    require("mngrm3a.whichkey").setup()
 end
 
 return M
