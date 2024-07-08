@@ -171,7 +171,7 @@ function M.setup(map_leader, local_map_leader)
     m("n", "<leader>td", "<CMD>DiffviewOpen<CR>", "Open Diffview")
     m("n", "<leader>th", "<CMD>DiffviewFileHistory<CR>", "Show file history")
     m("n", "<leader>tu", "<CMD>UndotreeToggle<CR>", "Toggle Undotree")
-    m("n", "<leader>te", "<CMD>30Sexplore!<CR>", "Show Netrw")
+    m("n", "<leader>te", "<CMD>Oil<CR>", "Show filemanager")
 
     -- buffers
     m("n", "<leader>z", "<CMD>bprevious<CR>", "Go to previous buffer")
