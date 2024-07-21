@@ -143,7 +143,7 @@ local hls_default_settings = {
                 ["typeVariableToken"] = "typeParameter",
                 ["variableToken"] = "variable"
             },
-            ["globalOn"] = false
+            ["globalOn"] = true
         },
         ["splice"] = {
             ["globalOn"] = true
