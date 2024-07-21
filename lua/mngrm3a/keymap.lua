@@ -92,8 +92,6 @@ function M.setup_lsp_keymap(buffer)
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
     end
 
-    m("n", "<leader>xl", ":LspLog<CR>", "Open LSP log")
-
     m("n", "K", vim.lsp.buf.hover, "Hover knowledge")
     m("n", "<leader>gd", vim.lsp.buf.definition, "Go to definition")
     m("n", "<leader>gt", vim.lsp.buf.type_definition, "Go to type definition")
