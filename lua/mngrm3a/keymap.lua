@@ -92,6 +92,10 @@ function M.setup_lsp_keymap(buffer)
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
     end
 
+    local builtin = require("telescope.builtin")
+    m("n", "<leader>si", builtin.lsp_incoming_calls, "Show incoming calls")
+    m("n", "<leader>so", builtin.lsp_outgoing_calls, "Show outgoing calls")
+
     m("n", "K", vim.lsp.buf.hover, "Hover knowledge")
     m("n", "<leader>gd", vim.lsp.buf.definition, "Go to definition")
     m("n", "<leader>gt", vim.lsp.buf.type_definition, "Go to type definition")
