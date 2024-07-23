@@ -38,6 +38,14 @@ local gitsigns_options = {
         col = 1
     },
 }
+
+local diffview_options = {
+    view = {
+        merge_tool = {
+            layout = "diff3_mixed"
+        }
+    }
+}
 --------------------------------------------------------------------------------
 -- section: setup
 --------------------------------------------------------------------------------
@@ -49,6 +57,7 @@ function M.setup()
         gitsigns_options)
     )
     require("neogit").setup()
+    require("diffview").setup(diffview_options)
 end
 
 return M
