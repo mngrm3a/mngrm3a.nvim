@@ -99,6 +99,7 @@ function M.setup(log_level)
     require("mngrm3a.lsp.nix")(with_capabilities)
     require("mngrm3a.lsp.haskell")(with_capabilities)
     require("mngrm3a.lsp.go")(with_capabilities)
+    require("mngrm3a.lsp.python")(with_capabilities)
 end
 
 return M
