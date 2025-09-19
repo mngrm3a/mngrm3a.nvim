@@ -1,105 +1,39 @@
--- -----------------------------------------------------------------------------
--- section: highlight symbol under cursor
--- -----------------------------------------------------------------------------
-local function setup_highlight_symbol(event)
-    local id = vim.tbl_get(event, 'data', 'client_id')
-    local client = id and vim.lsp.get_client_by_id(id)
-    if client == nil or not client.supports_method('textDocument/documentHighlight') then
-        return
-    end
+vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(ev)
+        local client = vim.lsp.get_client_by_id(ev.data and ev.data.client_id or -1)
+        if not client then return end
+        require("mngrm3a.keymap").lsp(ev.buf)
 
-    local group = vim.api.nvim_create_augroup('highlight_symbol', { clear = false })
+        -- Enable completion if supported
+        -- if client.supports_method(client, "textDocument/completion") then
+        --     vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+        -- end
 
-    vim.api.nvim_clear_autocmds({ buffer = event.buf, group = group })
-
-    vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-        group = group,
-        buffer = event.buf,
-        callback = vim.lsp.buf.document_highlight,
-    })
-
-    vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-        group = group,
-        buffer = event.buf,
-        callback = vim.lsp.buf.clear_references,
-    })
-end
-
-local function setup_highlight_symbol_autocmd()
-    vim.api.nvim_create_autocmd('LspAttach', {
-        desc = 'Setup highlight symbol',
-        callback = setup_highlight_symbol,
-    })
-end
-
--- -----------------------------------------------------------------------------
--- section: autosave on close
--- -----------------------------------------------------------------------------
-local fmt_group = vim.api.nvim_create_augroup('autoformat_cmds', { clear = true })
-
-local function setup_autoformat(event)
-    local id = vim.tbl_get(event, 'data', 'client_id')
-    local client = id and vim.lsp.get_client_by_id(id)
-    if client == nil then
-        return
-    end
-
-    vim.api.nvim_clear_autocmds({ group = fmt_group, buffer = event.buf })
-
-    vim.api.nvim_create_autocmd('BufWritePre', {
-        buffer = event.buf,
-        group = fmt_group,
-        desc = 'Format current buffer',
-        callback = function(e)
-            vim.lsp.buf.format({
-                bufnr = e.buf,
-                async = false,
-                timeout_ms = 10000,
+        -- Set up format on save if supported
+        if client.supports_method(client, "textDocument/formatting") then
+            vim.api.nvim_create_autocmd("BufWritePre", {
+                buffer = ev.buf,
+                callback = function()
+                    vim.lsp.buf.format({ bufnr = ev.buf })
+                end,
             })
-        end,
-    })
-end
+        end
 
-local function setup_autoformat_autocmd()
-    vim.api.nvim_create_autocmd('LspAttach', {
-        desc = 'Setup format on save',
-        callback = setup_autoformat,
-    })
-end
+        -- Set up buffer-local symbol highlighting if supported
+        if client.supports_method(client, "textDocument/documentHighlight") then
+            local group = vim.api.nvim_create_augroup("highlight_symbol", { clear = false })
 
--- -----------------------------------------------------------------------------
--- section: setup
--- -----------------------------------------------------------------------------
-local function with_capabilities(opts)
-    local capabilities = vim.tbl_deep_extend(
-        "force",
-        {},
-        vim.lsp.protocol.make_client_capabilities(),
-        require("cmp_nvim_lsp").default_capabilities()
-    )
-
-    return vim.tbl_deep_extend(
-        "force",
-        { capabilities = capabilities },
-        opts
-    )
-end
-
-local M = {}
-
-function M.setup(log_level)
-    log_level = log_level or vim.log.levels.DEBUG
-    vim.lsp.set_log_level(log_level)
-
-    setup_autoformat_autocmd()
-    setup_highlight_symbol_autocmd()
-
-    require("mngrm3a.lsp.shell")(with_capabilities)
-    require("mngrm3a.lsp.lua")(with_capabilities)
-    require("mngrm3a.lsp.nix")(with_capabilities)
-    require("mngrm3a.lsp.haskell")(with_capabilities)
-    require("mngrm3a.lsp.go")(with_capabilities)
-    require("mngrm3a.lsp.python")(with_capabilities)
-end
-
-return M
+            vim.api.nvim_clear_autocmds({ buffer = ev.buf, group = group })
+            vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+                group = group,
+                buffer = ev.buf,
+                callback = vim.lsp.buf.document_highlight,
+            })
+            vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+                group = group,
+                buffer = ev.buf,
+                callback = vim.lsp.buf.clear_references,
+            })
+        end
+    end,
+})

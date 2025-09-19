@@ -1,78 +1,23 @@
--- -----------------------------------------------------------------------------
--- section: diagnosticts
--- -----------------------------------------------------------------------------
-local function setup_diagnostics_ui()
-    vim.diagnostic.config({
-        signs = {
-            text = {
-                [vim.diagnostic.severity.ERROR] = "✘",
-                [vim.diagnostic.severity.WARN] = "▲",
-                [vim.diagnostic.severity.HINT] = "⚑",
-                [vim.diagnostic.severity.INFO] = "»",
-            },
-        },
-        float = {
-            focusable = false,
-            style = "minimal",
-            border = "rounded",
-            source = "always",
-            header = "",
-            prefix = "",
-        },
-    })
-end
+require("gruvbox").setup()
+vim.cmd("colorscheme gruvbox")
 
--- -----------------------------------------------------------------------------
--- section: colorschemes
--- -----------------------------------------------------------------------------
-local gruvbox_options =
-{
-    terminal_colors = true, -- add neovim terminal colors
-    undercurl = true,
-    underline = true,
-    bold = true,
-    italic = {
-        strings = true,
-        emphasis = true,
-        comments = true,
-        operators = false,
-        folds = true,
-    },
-    strikethrough = true,
-    invert_selection = false,
-    invert_signs = false,
-    invert_tabline = false,
-    invert_intend_guides = false,
-    inverse = true, -- invert background for search, diffs, statuslines and errors
-    contrast = "",  -- can be "hard", "soft" or empty string
-    palette_overrides = {},
-    overrides = {},
-    dim_inactive = false,
-    transparent_mode = false,
-}
-
--- -----------------------------------------------------------------------------
--- section: lualine
--- -----------------------------------------------------------------------------
-local lualine_options = {
-    options = {
-        icons_enabled = true,
-        theme = 'auto',
-        component_separators = { left = "", right = "" },
-        section_separators = { left = "", right = "" },
-        disabled_filetypes = {
-            statusline = {},
-            winbar = {},
+require("noice").setup({
+    lsp = {
+        override = {
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
         },
-        ignore_focus = {},
-        always_divide_middle = true,
-        globalstatus = false,
-        refresh = {
-            statusline = 1000,
-            tabline = 1000,
-            winbar = 1000,
-        }
     },
+    presets = {
+        bottom_search = false,
+        command_palette = true,
+        long_message_to_split = true,
+        inc_rename = false,
+        lsp_doc_border = false,
+    },
+})
+
+require("lualine").setup({
     sections = {
         lualine_a = { "mode" },
         lualine_b = { "branch", "diff" },
@@ -93,43 +38,23 @@ local lualine_options = {
         lualine_a = { "buffers" },
         lualine_z = { "tabs" }
     },
-    inactive_winbar = {},
-    extensions = {}
-}
+})
 
--- -----------------------------------------------------------------------------
--- section: noice
--- -----------------------------------------------------------------------------
-local noice_options = {
-    lsp = {
-        -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-        override = {
-            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-            ["vim.lsp.util.stylize_markdown"] = true,
-            ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = "✘",
+            [vim.diagnostic.severity.WARN] = "▲",
+            [vim.diagnostic.severity.HINT] = "⚑",
+            [vim.diagnostic.severity.INFO] = "»",
         },
     },
-    -- you can enable a preset for easier configuration
-    presets = {
-        bottom_search = true,         -- use a classic bottom cmdline for search
-        command_palette = true,       -- position the cmdline and popupmenu together
-        long_message_to_split = true, -- long messages will be sent to a split
-        inc_rename = false,           -- enables an input dialog for inc-rename.nvim
-        lsp_doc_border = false,       -- add a border to hover docs and signature help
+    float = {
+        focusable = false,
+        style = "minimal",
+        border = "rounded",
+        source = true,
+        header = "",
+        prefix = "",
     },
-}
-
--- -----------------------------------------------------------------------------
--- section: setup
--- -----------------------------------------------------------------------------
-local M = {}
-
-function M.setup()
-    require("gruvbox").setup(gruvbox_options)
-    vim.cmd("colorscheme gruvbox")
-    require("lualine").setup(lualine_options)
-    require("noice").setup(noice_options)
-    setup_diagnostics_ui()
-end
-
-return M
+})
