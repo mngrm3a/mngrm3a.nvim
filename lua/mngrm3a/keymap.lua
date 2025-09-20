@@ -8,21 +8,28 @@ function M.default()
     wk.add({
         -- Telescope Group: <leader>f
         { '<leader>f',  group = 'Find' },
-        { '<leader>ff', telescope.find_files,      desc = 'Find Files' },
-        { '<leader>fg', telescope.git_files,       desc = 'Git Files' },
-        { '<leader>fW', telescope.grep_string,     desc = 'Grep String' },
-        { '<leader>fw', telescope.live_grep,       desc = 'Live Grep' },
-        { '<leader>fb', telescope.buffers,         desc = 'Buffers' },
-        { '<leader>fr', telescope.oldfiles,        desc = 'Recent Files' },
-        { '<leader>fC', telescope.command_history, desc = 'Command History' },
-        { '<leader>fm', telescope.marks,           desc = 'Marks' },
-        { '<leader>fR', telescope.registers,       desc = 'Registers' },
-        { '<leader>fk', telescope.keymaps,         desc = 'Keymaps' },
-        { '<leader>fd', telescope.diagnostics,     desc = 'Diagnostics' },
-        { '<leader>fc', telescope.git_commits,     desc = 'Git Commits' },
-        { '<leader>fB', telescope.git_branches,    desc = 'Git Branches' },
-        { '<leader>fS', telescope.git_status,      desc = 'Git Status' },
-        { '<leader>fs', telescope.git_stash,       desc = 'Git Stash' },
+        { '<leader>ff', telescope.git_files, desc = 'File (Git)' },
+        {
+            '<leader>fF',
+            function() telescope.find_files({ find_command = { "fd", "--type", "f", "--hidden", "--no-ignore" }, }) end,
+            desc = 'File (WD)'
+        },
+        { '<leader>fb', telescope.buffers,         desc = 'Buffer (Open)' },
+        { '<leader>fB', telescope.oldfiles,        desc = 'Buffer (Recent)' },
+        { '<leader>fw', telescope.live_grep,       desc = 'String (Buffer)' },
+        { '<leader>fW', telescope.grep_string,     desc = 'String (WD)' },
+        { '<leader>fd', telescope.diagnostics,     desc = 'Diagnostic (Buffer)' },
+        { '<leader>fg', telescope.git_branches,    desc = 'Branch' },
+        { '<leader>fG', telescope.git_stash,       desc = 'Stash' },
+        { '<leader>fq', telescope.quickfix,        desc = 'Quickfix' },
+        { '<leader>fQ', telescope.quickfixHistory, desc = 'Quickfix (Recent)' },
+
+        -- Vim Group: <leader>§
+        { '<leader>f§', group = 'Vim' },
+        { '<leader>§r', telescope.registers,       desc = 'Register' },
+        { '<leader>§k', telescope.keymaps,         desc = 'Keymap' },
+        { '<leader>§m', telescope.marks,           desc = 'Mark' },
+        { '<leader>§C', telescope.command_history, desc = 'Command History' },
 
         -- Tools Group: <leader>t
         { '<leader>t',  group = 'Tools' },
@@ -36,6 +43,13 @@ function M.default()
         -- Navigation
         { "<leader>b", expand = function() return require("which-key.extras").expand.buf() end, desc = "Select Buffer"
         },
+        { '<C-t>',  group = 'Tabs' },
+        { '<C-t>q', ':tabclose<CR>',    desc = 'Close' },
+        { '<C-t>p', ':tabprevious<CR>', desc = 'Previous' },
+        { '<C-t>P', ':tabfirst<CR>',    desc = 'First' },
+        { '<C-t>n', ':tabnext<CR>',     desc = 'Next' },
+        { '<C-t>n', ':tablast<CR>',     desc = 'Last' },
+
     })
 end
 
