@@ -67,6 +67,7 @@ function M.setup()
         'lua_ls',
         'gopls',
         'pyright',
+        'ruff', -- python linter/formatter
         'java_language_server',
         -- web
         'htmx',
