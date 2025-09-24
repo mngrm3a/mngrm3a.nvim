@@ -21,6 +21,12 @@ function M.setup()
             enable = true
         },
     })
+    -- Use an expression to define folds
+    vim.o.foldmethod = "expr"
+    -- Use Tree-sitter's fold expression
+    vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+    -- Open all folds by default when a file is opened
+    vim.o.foldlevelstart = 99
 
     -- -------------------------------------------------------------------------
     -- completions
