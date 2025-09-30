@@ -5,7 +5,7 @@ function M.setup()
     vim.g.maplocalleader = " "
 
     require("mngrm3a.options")
-    require('mngrm3a.ui')
+    require('mngrm3a.ui').setup()
     local keymap = require('mngrm3a.keymap')
     keymap.default()
 
