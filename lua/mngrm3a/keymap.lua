@@ -11,7 +11,7 @@ function M.default()
         { '<leader>ff', telescope.git_files, desc = 'File (Git)' },
         {
             '<leader>fF',
-            function() telescope.find_files({ find_command = { "fd", "--type", "f", "--hidden", "--no-ignore" }, }) end,
+            function() telescope.find_files({ find_command = { "fd", "--type", "f", "--no-ignore" }, }) end,
             desc = 'File (WD)'
         },
         { '<leader>fb', telescope.buffers,         desc = 'Buffer (Open)' },
