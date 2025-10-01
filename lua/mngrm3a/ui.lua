@@ -31,11 +31,11 @@ local M = {}
 function M.setThemeMode(mode)
     local theme = {
         vim = {
-            light = 'gruvbox',
-            dark = 'gruvbox',
+            light = 'vscode',
+            dark = 'github_dark_dimmed',
         },
         lualine = {
-            light = 'auto',
+            light = 'github_light_default',
             dark = 'auto'
         },
     }
@@ -90,9 +90,10 @@ function M.setup()
             prefix = "",
         },
     })
-
-    require("gruvbox").setup()
-
+    
+    require('github-theme').setup()
+    require('vscode').setup()
+    
     M.setThemeMode('auto')
 end
 
