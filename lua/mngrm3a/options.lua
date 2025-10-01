@@ -9,7 +9,7 @@ vim.opt.cursorline = true
 -- Show sign column with width of 3
 vim.opt.signcolumn = "yes:3"
 -- Highlight column at 80 characters
-vim.opt.colorcolumn = "80"
+vim.opt.colorcolumn = "83" -- 80 + 3 to account for the sign column
 -- Keep 8 lines above/below cursor when scrolling
 vim.opt.scrolloff = 8
 
