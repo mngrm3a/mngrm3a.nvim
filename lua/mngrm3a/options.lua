@@ -2,7 +2,8 @@
 -- Enable true color support in terminal
 vim.opt.termguicolors = true
 -- Cursor appearance for different modes
-vim.opt.guicursor = "n-v-c:block,i-ci-ve:block,r-cr:hor80,o:hor50,v-c-i-ci-ve:blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"
+vim.opt.guicursor =
+"n-v-c:block,i-ci-ve:block,r-cr:hor80,o:hor50,v-c-i-ci-ve:blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"
 -- Highlight current line
 vim.opt.cursorline = true
 -- Show sign column with width of 3
