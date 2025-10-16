@@ -21,6 +21,8 @@ function M.default()
         { '<leader>fd', telescope.diagnostics,              desc = 'Diagnostic (Buffer)' },
         { '<leader>fg', telescope.git_branches,             desc = 'Branch' },
         { '<leader>fG', telescope.git_stash,                desc = 'Stash' },
+        { '<leader>fs', telescope.lsp_document_symbols,     desc = 'Symbols (Buffer)' },
+        { '<leader>fS', telescope.lsp_workspace_symbols,    desc = 'Symbols (Workspace))' },
         { '<leader>fq', telescope.quickfix,                 desc = 'Quickfix' },
         { '<leader>fQ', telescope.quickfixHistory,          desc = 'Quickfix (Recent)' },
 
