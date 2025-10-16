@@ -70,6 +70,7 @@ function M.setup()
     require("mngrm3a.lsp")
     for _, server in ipairs({
         -- general
+        'bashls',
         'lua_ls',
         'gopls',
         'pyright',
