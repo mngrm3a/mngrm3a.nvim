@@ -1,3 +1,7 @@
+-- Leaders
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
 -- Editor Appearance
 -- Enable true color support in terminal
 vim.opt.termguicolors = true
@@ -33,6 +37,14 @@ vim.opt.smartindent = true
 -- Disable line wrapping
 vim.opt.wrap = false
 
+-- Folding
+-- Use an expression to define folds
+vim.o.foldmethod = "expr"
+-- Use Tree-sitter's fold expression
+vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- Open all folds by default when a file is opened
+vim.o.foldlevelstart = 99
+
 -- Whitespace Visualization
 -- Define characters for whitespace visualization
 vim.opt.listchars = "eol:$,tab:>-,trail:~,extends:>,precedes:<"
@@ -66,3 +78,58 @@ vim.opt.incsearch = true
 vim.opt.isfname:append("@-@")
 -- Time (ms) before triggering CursorHold event
 vim.opt.updatetime = 400
+
+-- Diagnostics
+vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = "✘",
+            [vim.diagnostic.severity.WARN] = "▲",
+            [vim.diagnostic.severity.HINT] = "⚑",
+            [vim.diagnostic.severity.INFO] = "»",
+        },
+    },
+    float = {
+        focusable = false,
+        style = "minimal",
+        border = "rounded",
+        source = true,
+        header = "",
+        prefix = "",
+    },
+})
+
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+    if vim.v.shell_error ~= 0 then
+        vim.api.nvim_echo({
+            { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+            { out,                            "WarningMsg" },
+            { "\nPress any key to exit..." },
+        }, true, {})
+        vim.fn.getchar()
+        os.exit(1)
+    end
+end
+vim.opt.rtp:prepend(lazypath)
+
+local theme = require("config.theme")
+
+-- Setup lazy.nvim
+require("lazy").setup({
+    spec = {
+        { import = "plugins" },
+    },
+    install = { colorscheme = { theme.bg() } },
+    checker = { enabled = true },
+})
+
+vim.api.nvim_create_autocmd("OptionSet", {
+    pattern = "background",
+    callback = theme.refresh
+})
+
+theme.refresh()

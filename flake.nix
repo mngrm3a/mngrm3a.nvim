@@ -14,18 +14,11 @@
         pkgs = nixpkgs.legacyPackages.${system};
       in
       {
-        packages.default = pkgs.vimUtils.buildVimPlugin {
-          name = "mngrm3a.nvim";
-          src = pkgs.lib.sourceFilesBySuffices ./. [ ".lua" ];
-        };
-
         devShells.default =
           with pkgs;
           mkShell {
             buildInputs = [
               lua-language-server
-              nil
-              nixfmt-rfc-style
             ];
           };
       }

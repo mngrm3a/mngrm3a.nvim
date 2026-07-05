@@ -1,1 +1,0 @@
-require("mngrm3a").setup()
